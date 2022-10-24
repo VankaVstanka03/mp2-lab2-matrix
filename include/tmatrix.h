@@ -27,39 +27,86 @@ public:
   {
     if (sz == 0)
       throw out_of_range("Vector size should be greater than zero");
+    else if (sz > MAX_VECTOR_SIZE)
+        throw std::exception("It's very big size for vector");
+    else if (sz < 0)
+        throw std::exception("Can't be vector with negative size");
     pMem = new T[sz]();// {}; // У типа T д.б. констуктор по умолчанию
   }
-  TDynamicVector(T* arr, size_t s) : sz(s)
-  {
-    assert(arr != nullptr && "TDynamicVector ctor requires non-nullptr arg");
-    pMem = new T[sz];
-    std::copy(arr, arr + sz, pMem);
+  TDynamicVector(T* arr, size_t s) : sz(s){
+      if (sz == 0)
+          throw out_of_range("Vector size should be greater than zero");
+      else if (sz > MAX_VECTOR_SIZE)
+          throw std::exception("It's very big size for vector");
+      else if (sz < 0)
+          throw std::exception("Can't be vector with negative size");
+      assert(arr != nullptr && "TDynamicVector ctor requires non-nullptr arg");
+      pMem = new T[sz];
+      std::copy(arr, arr + sz, pMem);
+      
   }
-  TDynamicVector(const TDynamicVector& v)
-  {
+  TDynamicVector(const TDynamicVector& v){
+      sz = v.sz;
+      T* pMemcopy = new T[sz];
+      for (int i = 0; i < sz; i++) {
+          pMemcopy[i] = v.pMem[i];
+      }
+      pMem = pMemcopy;
   }
-  TDynamicVector(TDynamicVector&& v) noexcept
-  {
+  TDynamicVector(TDynamicVector&& v) noexcept{
+      sz = v.sz;
+      T* pMemcopy = new T[sz];
+      for (int i = 0; i < sz; i++) {
+          pMemcopy[i] = v.pMem[i];
+      }
+      pMem = pMemcopy;
+      v.sz = 0;
+      v.pMem = nullptr;
   }
-  ~TDynamicVector()
-  {
+  ~TDynamicVector(){
+      delete[] pMem;
   }
-  TDynamicVector& operator=(const TDynamicVector& v)
-  {
+  TDynamicVector& operator=(const TDynamicVector& v){
+      if (this == &v)
+          return *this;
+      sz = v.sz;
+      delete[] pMem;
+      pMem = new T[sz];
+      for (int i = 0; i < sz; i++) {
+          pMem[i] = v.pMem[i];
+      }
+      return *this;
   }
-  TDynamicVector& operator=(TDynamicVector&& v) noexcept
-  {
+  TDynamicVector& operator=(TDynamicVector&& v) noexcept{
+      if (this == &v)
+          return *this;
+      sz = v.sz;
+      delete[] pMem;
+      pMem = new T[sz];
+      for (int i = 0; i < sz; i++) {
+          pMem[i] = v.pMem[i];
+      }
+      v.sz = 0;
+      v.pMem = nullptr;
       return *this;
   }
 
   size_t size() const noexcept { return sz; }
 
   // индексация
-  T& operator[](size_t ind)
-  {
+  T& operator[](size_t ind){
+      if (ind < 0)
+          throw std::exception("Can't be negative index");
+      else if(ind > sz)
+          throw std::exception("Very big index");
+      return pMem[i];
   }
-  const T& operator[](size_t ind) const
-  {
+  const T& operator[](size_t ind) const{
+      if (ind < 0)
+          throw std::exception("Can't be negative index");
+      else if (ind > sz)
+          throw std::exception("Very big index");
+      return pMem[i];
   }
   // индексация с контролем
   T& at(size_t ind)
@@ -70,11 +117,21 @@ public:
   }
 
   // сравнение
-  bool operator==(const TDynamicVector& v) const noexcept
-  {
+  bool operator==(const TDynamicVector& v) const noexcept{
+      if (sz != v.sz) {
+          return false;
+      }
+      else {
+          for (int i = 0; i < sz; i++) {
+              if (pMem[i] != v.pMem[i]) {
+                  return false;
+              }
+          }
+          return true;
+      }
   }
-  bool operator!=(const TDynamicVector& v) const noexcept
-  {
+  bool operator!=(const TDynamicVector& v) const noexcept{
+      return !(*this == v)
   }
 
   // скалярные операции

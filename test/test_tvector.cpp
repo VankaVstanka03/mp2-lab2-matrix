@@ -24,9 +24,11 @@ TEST(TDynamicVector, can_create_copied_vector)
   ASSERT_NO_THROW(TDynamicVector<int> v1(v));
 }
 
-TEST(TDynamicVector, copied_vector_is_equal_to_source_one)
-{
-  ADD_FAILURE();
+TEST(TDynamicVector, copied_vector_is_equal_to_source_one){
+	TDynamicVector<int> v1(5);
+	TDynamicVector<int> v2(v1);
+
+	EXPECT_EQ(v1, v2);
 }
 
 TEST(TDynamicVector, copied_vector_has_its_own_memory)
