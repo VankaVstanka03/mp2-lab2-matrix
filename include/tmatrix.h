@@ -95,24 +95,24 @@ public:
 
   // индексация
   T& operator[](size_t ind){
-      if (ind < 0)
-          throw std::exception("Can't be negative index");
-      else if(ind > sz)
-          throw std::exception("Very big index");
       return pMem[ind];
   }
   const T& operator[](size_t ind) const{
+      return pMem[ind];
+  }
+  // индексация с контролем
+  T& at(size_t ind){
       if (ind < 0)
           throw std::exception("Can't be negative index");
       else if (ind > sz)
           throw std::exception("Very big index");
       return pMem[ind];
   }
-  // индексация с контролем
-  T& at(size_t ind){
-      return pMem[ind];
-  }
   const T& at(size_t ind) const{
+      if (ind < 0)
+          throw std::exception("Can't be negative index");
+      else if (ind > sz)
+          throw std::exception("Very big index");
       return pMem[ind];
   }
 
@@ -187,11 +187,11 @@ public:
       if (sz != v.sz)
           throw std::exception("Can't multiply vectors with different size");
       else {
-          TDynamicVector copy(sz);
+          T res = 0;
           for (int i = 0; i < sz; i++) {
-              copy.pMem[i] = pMem[i] * v.pMem[i];
+              res += pMem[i] * v.pMem[i];
           }
-          return copy;
+          return res;
       }
   }
 
