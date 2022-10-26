@@ -95,9 +95,17 @@ public:
 
   // индексация
   T& operator[](size_t ind){
+      if (ind < 0)
+          throw std::exception("Can't be negative index");
+      else if (ind > sz)
+          throw std::exception("Very big index");
       return pMem[ind];
   }
   const T& operator[](size_t ind) const{
+      if (ind < 0)
+          throw std::exception("Can't be negative index");
+      else if (ind > sz)
+          throw std::exception("Very big index");
       return pMem[ind];
   }
   // индексация с контролем
@@ -131,7 +139,7 @@ public:
       }
   }
   bool operator!=(const TDynamicVector& v) const noexcept{
-      return !(*this == v)
+      return !(*this == v);
   }
 
   // скалярные операции
@@ -227,7 +235,7 @@ class TDynamicMatrix : private TDynamicVector<TDynamicVector<T>>
 public:
   TDynamicMatrix(size_t s = 1) : TDynamicVector<TDynamicVector<T>>(s){
       if (s > MAX_MATRIX_SIZE)
-          throw std::exception("Very big size of matrix");
+          throw std::exception("Very big size for matrix");
       for (size_t i = 0; i < sz; i++)
           pMem[i] = TDynamicVector<T>(sz);
   }
@@ -235,13 +243,22 @@ public:
   using TDynamicVector<TDynamicVector<T>>::operator[];
 
   // сравнение
-  bool operator==(const TDynamicMatrix& m) const noexcept
-  {
+  bool operator==(const TDynamicMatrix& m) const noexcept{
+      if (sz != m.size())
+          return false;
+      for (int i = 0; i < sz; i++) {
+          if (this->pMem[i] != m.pMem[i]) {
+              return false;
+          }
+      }
+      return true;
+
   }
 
   // матрично-скалярные операции
-  TDynamicVector<T> operator*(const T& val)
-  {
+  TDynamicVector<T> operator*(const T& val){
+      TDynamicVector<T> copy(this->sz);
+
   }
 
   // матрично-векторные операции
@@ -261,11 +278,13 @@ public:
   }
 
   // ввод/вывод
-  friend istream& operator>>(istream& istr, TDynamicMatrix& v)
-  {
+  friend istream& operator>>(istream& istr, TDynamicMatrix& v){
+
+
   }
-  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v)
-  {
+  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v){
+
+
   }
 };
 
