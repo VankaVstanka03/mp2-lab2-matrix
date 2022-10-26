@@ -191,7 +191,7 @@ public:
           return copy;
       }
   }
-  T operator*(const TDynamicVector& v) noexcept(noexcept(T())){
+  T operator*(const TDynamicVector& v){
       if (sz != v.sz)
           throw std::exception("Can't multiply vectors with different size");
       else {
@@ -255,35 +255,86 @@ public:
 
   }
 
-  // матрично-скалярные операции
-  TDynamicVector<T> operator*(const T& val){
-      TDynamicVector<T> copy(this->sz);
+  size_t size() const noexcept { return sz; }
 
+  // матрично-скалярные операции
+  TDynamicMatrix operator*(const T& val){
+      TDynamicMatrix copy(*this);
+      for (int i = 0; i < sz; i++) {
+          copy[i] = copy[i] * val;
+      }
+      return copy;
   }
 
   // матрично-векторные операции
-  TDynamicVector<T> operator*(const TDynamicVector<T>& v)
-  {
+  TDynamicVector<T> operator*(const TDynamicVector<T>& v){
+      if (sz != v.size())
+          throw std::exception("Can't multiply matrix and vector with different size");
+      TDynamicVector<T> copy(sz);
+      for (int i = 0; i < sz; i++) {
+          copy[i] = 0;
+          for (int j = 0; j < sz; j++) {
+              copy[i] += pMem[i][j] * v[j];
+          }
+      }
+      return copy;
+
   }
 
   // матрично-матричные операции
-  TDynamicMatrix operator+(const TDynamicMatrix& m)
-  {
+  TDynamicMatrix operator+(const TDynamicMatrix& m){
+      if (sz != m.size())
+          throw std::exception("Can't add matrixes with different size");
+      TDynamicMatrix copy(*this);
+      for (int i = 0; i < sz; i++) {
+          copy[i] = copy[i] + m[i];
+      }
+      return copy;
+
   }
-  TDynamicMatrix operator-(const TDynamicMatrix& m)
-  {
+  TDynamicMatrix operator-(const TDynamicMatrix& m){
+      if (sz != m.size())
+          throw std::exception("Can't substract matrixes with different size");
+      TDynamicMatrix copy(*this);
+      for (int i = 0; i < sz; i++) {
+          copy[i] = copy[i] - m[i];
+      }
+      return copy;
   }
-  TDynamicMatrix operator*(const TDynamicMatrix& m)
-  {
+  TDynamicMatrix operator*(const TDynamicMatrix& m){
+      if (sz != m.size())
+          throw std::exception("Can't substract matrixes with different size");
+      TDynamicMatrix copy(sz);
+      for (int i = 0; i < sz; i++) {
+          for (int j = 0; j < sz; j++) {
+              copy[i][j] = 0;
+              for (int k = 0; k < sz; k++) {
+                  copy[i][j] += pMem[i][k] * m[k][j];
+              }
+          }
+      }
+      return copy;
   }
 
   // ввод/вывод
   friend istream& operator>>(istream& istr, TDynamicMatrix& v){
-
+      for (int i = 0; i < v.size(); i++) {
+          for (int j = 0; j < v.size(); j++) {
+              istr >> v[i][j];
+          }
+          istr >> v[i];
+      }
+      return istr;
 
   }
   friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v){
-
+      for (int i = 0; i < v.size(); i++) {
+          for (int j = 0; j < v.size(); j++) {
+              ostr << v[i][j] << " ";
+          }
+          ostr << "\n";
+      }
+      return ostr;
 
   }
 };

@@ -87,7 +87,7 @@ TEST(TDynamicMatrix, assign_operator_change_matrix_size){
 
 	ASSERT_NO_THROW(m1 = m2);
 	EXPECT_EQ(1, m1[0][0]);
-	EXPECT_EQ(m2[0].size(), m1[0].size());
+	EXPECT_EQ(m2.size(), m1.size());
 }
 
 TEST(TDynamicMatrix, can_assign_matrices_of_different_size){
@@ -122,23 +122,91 @@ TEST(TDynamicMatrix, matrices_with_different_size_are_not_equal){
 
 }
 
-TEST(TDynamicMatrix, can_add_matrices_with_equal_size)
-{
-  ADD_FAILURE();
+TEST(TDynamicMatrix, can_add_matrices_with_equal_size){
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(2);
+	TDynamicMatrix<int> exp(2);
+
+	m1[0][0] = 1;
+	m1[0][1] = 2;
+	m1[1][0] = 2;
+	m1[1][1] = 3;
+
+	m2[0][0] = 1;
+	m2[0][1] = 2;
+	m2[1][0] = 2;
+	m2[1][1] = 3;
+
+	exp[0][0] = 2;
+	exp[0][1] = 4;
+	exp[1][0] = 4;
+	exp[1][1] = 6;
+
+	TDynamicMatrix<int> m3 = m1 + m2;
+
+	EXPECT_EQ(exp, m3);
 }
 
-TEST(TDynamicMatrix, cant_add_matrices_with_not_equal_size)
-{
-  ADD_FAILURE();
+TEST(TDynamicMatrix, cant_add_matrices_with_not_equal_size){
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(3);
+
+	ASSERT_ANY_THROW(m1 + m2);
 }
 
-TEST(TDynamicMatrix, can_subtract_matrices_with_equal_size)
-{
-  ADD_FAILURE();
+TEST(TDynamicMatrix, can_subtract_matrices_with_equal_size){
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(2);
+	TDynamicMatrix<int> exp(2);
+
+	m1[0][0] = 1;
+	m1[0][1] = 2;
+	m1[1][0] = 2;
+	m1[1][1] = 3;
+
+	exp[0][0] = 1;
+	exp[0][1] = 2;
+	exp[1][0] = 2;
+	exp[1][1] = 3;
+
+	m2[0][0] = 2;
+	m2[0][1] = 4;
+	m2[1][0] = 4;
+	m2[1][1] = 6;
+
+	TDynamicMatrix<int> m3 = m2 - m1;
+
+	EXPECT_EQ(exp, m3);
 }
 
-TEST(TDynamicMatrix, cant_subtract_matrixes_with_not_equal_size)
-{
-  ADD_FAILURE();
+TEST(TDynamicMatrix, cant_subtract_matrixes_with_not_equal_size){
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(3);
+
+	ASSERT_ANY_THROW(m1 - m2);
+}
+
+TEST(TDynamicMatrix, can_multiply_matrixes_with_equal_size) {
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(2);
+	TDynamicMatrix<int> exp(2);
+
+	m1[0][0] = 1;
+	m1[0][1] = 2;
+	m1[1][0] = 2;
+	m1[1][1] = 3;
+
+	m2[0][0] = 1;
+	m2[0][1] = 2;
+	m2[1][0] = 2;
+	m2[1][1] = 3;
+
+	exp[0][0] = 5;
+	exp[0][1] = 8;
+	exp[1][0] = 8;
+	exp[1][1] = 13;
+
+	TDynamicMatrix<int> m3 = m1 * m2;
+	EXPECT_EQ(exp, m3);
 }
 
