@@ -28,18 +28,18 @@ public:
     if (sz == 0)
       throw out_of_range("Vector size should be greater than zero");
     else if (sz > MAX_VECTOR_SIZE)
-        throw std::exception("It's very big size for vector");
+        throw length_error("It's very big size for vector");
     else if (sz < 0)
-        throw std::exception("Can't be vector with negative size");
+        throw domain_error("Can't be vector with negative size");
     pMem = new T[sz]();// {}; // У типа T д.б. констуктор по умолчанию
   }
   TDynamicVector(T* arr, size_t s) : sz(s){
       if (sz == 0)
           throw out_of_range("Vector size should be greater than zero");
       else if (sz > MAX_VECTOR_SIZE)
-          throw std::exception("It's very big size for vector");
+          throw length_error("It's very big size for vector");
       else if (sz < 0)
-          throw std::exception("Can't be vector with negative size");
+          throw domain_error("Can't be vector with negative size");
       assert(arr != nullptr && "TDynamicVector ctor requires non-nullptr arg");
       pMem = new T[sz];
       std::copy(arr, arr + sz, pMem);
@@ -96,9 +96,9 @@ public:
   // индексация
   T& operator[](size_t ind){
       if (ind < 0)
-          throw std::exception("Can't be negative index");
+          throw domain_error("Can't be negative index");
       else if (ind > sz)
-          throw std::exception("Very big index");
+          throw out_of_range("Very big index");
       return pMem[ind];
   }
   const T& operator[](size_t ind) const{
@@ -111,16 +111,16 @@ public:
   // индексация с контролем
   T& at(size_t ind){
       if (ind < 0)
-          throw std::exception("Can't be negative index");
+          throw domain_error("Can't be negative index");
       else if (ind > sz)
-          throw std::exception("Very big index");
+          throw out_of_range("Very big index");
       return pMem[ind];
   }
   const T& at(size_t ind) const{
       if (ind < 0)
-          throw std::exception("Can't be negative index");
+          throw domain_error("Can't be negative index");
       else if (ind > sz)
-          throw std::exception("Very big index");
+          throw out_of_range("Very big index");
       return pMem[ind];
   }
 
@@ -170,7 +170,7 @@ public:
   // векторные операции
   TDynamicVector operator+(const TDynamicVector& v){
       if (sz != v.sz)
-          throw std::exception("Can't sum vectors with different size");
+          throw domain_error("Can't sum vectors with different size");
       else {
           TDynamicVector copy(sz);
           for (int i = 0; i < sz; i++) {
@@ -182,7 +182,7 @@ public:
   }
   TDynamicVector operator-(const TDynamicVector& v){
       if (sz != v.sz)
-          throw std::exception("Can't substract vectors with different size");
+          throw domain_error("Can't substract vectors with different size");
       else {
           TDynamicVector copy(sz);
           for (int i = 0; i < sz; i++) {
@@ -193,7 +193,7 @@ public:
   }
   T operator*(const TDynamicVector& v){
       if (sz != v.sz)
-          throw std::exception("Can't multiply vectors with different size");
+          throw domain_error("Can't multiply vectors with different size");
       else {
           T res = 0;
           for (int i = 0; i < sz; i++) {
@@ -235,7 +235,7 @@ class TDynamicMatrix : private TDynamicVector<TDynamicVector<T>>
 public:
   TDynamicMatrix(size_t s = 1) : TDynamicVector<TDynamicVector<T>>(s){
       if (s > MAX_MATRIX_SIZE)
-          throw std::exception("Very big size for matrix");
+          throw length_error("Very big size for matrix");
       for (size_t i = 0; i < sz; i++)
           pMem[i] = TDynamicVector<T>(sz);
   }
@@ -269,7 +269,7 @@ public:
   // матрично-векторные операции
   TDynamicVector<T> operator*(const TDynamicVector<T>& v){
       if (sz != v.size())
-          throw std::exception("Can't multiply matrix and vector with different size");
+          throw domain_error("Can't multiply matrix and vector with different size");
       TDynamicVector<T> copy(sz);
       for (int i = 0; i < sz; i++) {
           copy[i] = 0;
@@ -284,7 +284,7 @@ public:
   // матрично-матричные операции
   TDynamicMatrix operator+(const TDynamicMatrix& m){
       if (sz != m.size())
-          throw std::exception("Can't add matrixes with different size");
+          throw domain_error("Can't add matrixes with different size");
       TDynamicMatrix copy(*this);
       for (int i = 0; i < sz; i++) {
           copy[i] = copy[i] + m[i];
@@ -294,7 +294,7 @@ public:
   }
   TDynamicMatrix operator-(const TDynamicMatrix& m){
       if (sz != m.size())
-          throw std::exception("Can't substract matrixes with different size");
+          throw domain_error("Can't substract matrixes with different size");
       TDynamicMatrix copy(*this);
       for (int i = 0; i < sz; i++) {
           copy[i] = copy[i] - m[i];
@@ -303,7 +303,7 @@ public:
   }
   TDynamicMatrix operator*(const TDynamicMatrix& m){
       if (sz != m.size())
-          throw std::exception("Can't substract matrixes with different size");
+          throw domain_error("Can't substract matrixes with different size");
       TDynamicMatrix copy(sz);
       for (int i = 0; i < sz; i++) {
           for (int j = 0; j < sz; j++) {
