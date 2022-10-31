@@ -103,9 +103,9 @@ public:
   }
   const T& operator[](size_t ind) const{
       if (ind < 0)
-          throw std::exception("Can't be negative index");
+          throw out_of_range("Can't be negative index");
       else if (ind > sz)
-          throw std::exception("Very big index");
+          throw length_error("Very big index");
       return pMem[ind];
   }
   // индексация с контролем
