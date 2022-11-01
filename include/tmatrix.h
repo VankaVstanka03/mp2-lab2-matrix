@@ -55,11 +55,7 @@ public:
   }
   TDynamicVector(TDynamicVector&& v) noexcept{
       sz = v.sz;
-      T* pMemcopy = new T[sz];
-      for (int i = 0; i < sz; i++) {
-          pMemcopy[i] = v.pMem[i];
-      }
-      pMem = pMemcopy;
+      pMem = v.pMem;
       v.sz = 0;
       v.pMem = nullptr;
   }
@@ -78,14 +74,10 @@ public:
       return *this;
   }
   TDynamicVector& operator=(TDynamicVector&& v) noexcept{
-      if (this == &v)
-          return *this;
-      sz = v.sz;
       delete[] pMem;
-      pMem = new T[sz];
-      for (int i = 0; i < sz; i++) {
-          pMem[i] = v.pMem[i];
-      }
+      pMem = v.pMem;
+      sz = v.sz;
+
       v.sz = 0;
       v.pMem = nullptr;
       return *this;

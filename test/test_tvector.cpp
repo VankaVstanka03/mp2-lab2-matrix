@@ -67,6 +67,27 @@ TEST(TDynamicVector, throws_when_set_element_with_too_large_index)
 	ASSERT_ANY_THROW(v.at(10) = 1);
 }
 
+TEST(TDynamicVector, move_constructor_can_make_object_correctly) {
+	TDynamicVector<int> v(4);
+	v[0] = 1;
+	v[1] = 2;
+	TDynamicVector<int> v1 = std::move(v);
+ 
+	EXPECT_EQ(1, v1[0]);
+	EXPECT_EQ(2, v1[1]);
+}
+
+TEST(TDynamicVector, move_constructor_nulls_object_but_not_delete) {
+	TDynamicVector<int> v(4);
+	v[0] = 1;
+	v[1] = 2;
+	TDynamicVector<int> v1 = std::move(v);
+
+	ASSERT_NO_THROW(v.size());
+	EXPECT_EQ(0, v.size());
+	
+}
+
 TEST(TDynamicVector, can_assign_vector_to_itself){
 	TDynamicVector<int> v(4);
 
